@@ -23,4 +23,26 @@
         <h5 class="text-center text-danger">Location: {{images.location}}</h5>
         <hr>
       </div>
-     
+      <div class="text-center">
+        <!-- The text field -->
+        <input type="text" value="https://picturefantasy.herokuapp.com/image/{{images.id}}" id="myInput">
+
+        <!-- The button used to copy the text -->
+        <button class="btn btn-warning" onclick="myFunction()">Copy Link </button>
+        <hr>
+      </div>
+      <!--/.Content-->
+    </div>
+
+    <!--/.Card reveal-->
+  </div>
+  <script>
+function myFunction() {
+  var copyText = document.getElementById("myInput");
+  copyText.select();
+  document.execCommand("Copy");
+  alert("Copied the link: " + copyText.value);
+}
+</script>
+
+  {% endblock %} -->
