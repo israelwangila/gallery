@@ -11,9 +11,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import django_heroku
 import dj_database_url
+from decouple import config,Csv 
 db_from_env = dj_database_url.config(conn_max_age=500)
-from decouple import config
+
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -45,7 +47,8 @@ INSTALLED_APPS = [
     'bootstrap3',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE = [ 
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,18 +83,34 @@ WSGI_APPLICATION = 'exhibit.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME':  'ggallery',
-        'USER': '',
-        'PASSWORD': 'Access',
-        
-        
-    }
-}
 
+if config('MODE')=="dev": 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME':  'ggallery',
+            'USER': 'moringa',
+            'PASSWORD': 'Access',
+            'HOST': 'localhost',
+            'PORT': '', 
+            
+        }
+    }
+
+
+# production
+else:
+    DATABASES = {
+        'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+        )
+    } 
+
+db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
+
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv()) 
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -129,11 +148,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+]
+
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv()) 
+# Configure Django App for Heroku.
+django_heroku.settings(locals()) 
