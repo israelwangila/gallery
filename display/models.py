@@ -89,6 +89,8 @@ class Image(models.Model):
         display = cls.objects.filter(
             location__name__icontains='Silicon Valley')
         return display
-
+        
+    def update_location(cls, id, value):
+        cls.objects.filter(id=id).update(image=value)
     class Meta:
         ordering = ['image_name']
