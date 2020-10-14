@@ -1,8 +1,3 @@
-.vscode/
-*.pyc
 virtual/
-.idea
+*.pyc
 .env
-__pycache__/
-.DS_Store
-.psql_history 
